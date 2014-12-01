@@ -1,8 +1,14 @@
 import Darwin
 
-
-protocol Expression: Printable {
+protocol Term: Printable {
   var reducible: Bool { get }
+}
+
+protocol Statement: Term {
+  func reduce(environment: [String: Expression]) -> (Statement, [String: Expression])
+}
+
+protocol Expression: Statement {
   func reduce(environment: [String: Expression]) -> Expression
 }
 
@@ -20,6 +26,10 @@ extension Number: Expression {
 
   var reducible: Bool {
     return false
+  }
+
+  func reduce(environment: [String: Expression]) -> (Statement, [String: Expression]) {
+    abort()
   }
 
   func reduce(environment: [String: Expression]) -> Expression {
@@ -42,6 +52,10 @@ extension Add: Expression {
 
   var reducible: Bool {
     return true
+  }
+
+  func reduce(environment: [String: Expression]) -> (Statement, [String: Expression]) {
+    return (reduce(environment), environment)
   }
 
   func reduce(environment: [String: Expression]) -> Expression {
@@ -75,6 +89,10 @@ extension Multiply: Expression {
     return true
   }
 
+  func reduce(environment: [String: Expression]) -> (Statement, [String: Expression]) {
+    return (reduce(environment), environment)
+  }
+
   func reduce(environment: [String: Expression]) -> Expression {
     switch (left.reducible, right.reducible) {
     case (true, _):
@@ -103,8 +121,69 @@ struct Variable: Expression {
     return true
   }
 
+  func reduce(environment: [String: Expression]) -> (Statement, [String: Expression]) {
+    return (reduce(environment), environment)
+  }
+
   func reduce(environment: [String: Expression]) -> Expression {
     return environment[name]!
+  }
+}
+
+
+// Assignment
+
+struct DoNothing: Expression {
+  var description: String {
+    return "do-nothing"
+  }
+
+  var reducible: Bool {
+    return false
+  }
+
+  func reduce(environment: [String: Expression]) -> (Statement, [String: Expression]) {
+    abort()
+  }
+
+  func reduce(environment: [String: Expression]) -> Expression {
+    abort()
+  }
+}
+
+struct Assign: Statement {
+  let name: String
+  let expression: Expression
+
+  var description: String {
+    return "\(name) = \(expression.description)"
+  }
+
+  var reducible: Bool {
+    return true
+  }
+
+  func reduce(environment: [String: Expression]) -> (Statement, [String: Expression]) {
+    if expression.reducible {
+      return ( Assign(name: name, expression: expression.reduce(environment))
+             , environment
+             )
+    }
+    else {
+      return ( DoNothing()
+             , environment.merge([name: expression])
+             )
+    }
+  }
+}
+
+extension Dictionary {
+  func merge(other: [Key: Value]) -> [Key: Value] {
+    var merged = self
+    for (key, value) in other {
+      merged[key] = value
+    }
+    return merged
   }
 }
 
@@ -152,3 +231,19 @@ var machine = Machine(
               )
 
 machine.run()
+
+var stmt = Assign(
+             name: "x",
+             expression: Add(
+               left: Number(value: 1),
+               right: Number(value: 2)
+             )
+           )
+
+println("‹\(stmt.description)›")
+var env = [String: Expression]()
+var (newstmt, newenv) = stmt.reduce(env)
+println("stmt: ‹\(newstmt.description)›, env: ‹\(newenv.description)")
+var (newnewstmt, newnewenv) = newstmt.reduce(newenv)
+let x = "x"
+println("stmt: ‹\(newnewstmt.description)›, env: [\(x) = ‹\(newnewenv[x]!.description)›]")

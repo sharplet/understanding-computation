@@ -1,7 +1,7 @@
 import Darwin
 
 
-protocol Expression: Printable, DebugPrintable {
+protocol Expression: Printable {
   var reducible: Bool { get }
   func reduce() -> Expression
 }
@@ -16,10 +16,6 @@ struct Number {
 extension Number: Expression {
   var description: String {
     return "\(value)"
-  }
-
-  var debugDescription: String {
-    return "‹\(description)›"
   }
 
   var reducible: Bool {
@@ -42,10 +38,6 @@ struct Add {
 extension Add: Expression {
   var description: String {
     return "\(left.description) + \(right.description)"
-  }
-
-  var debugDescription: String {
-    return "‹\(description)›"
   }
 
   var reducible: Bool {
@@ -77,10 +69,6 @@ struct Multiply {
 extension Multiply: Expression {
   var description: String {
     return "\(left.description) * \(right.description)"
-  }
-
-  var debugDescription: String {
-    return "‹\(description)›"
   }
 
   var reducible: Bool {
@@ -120,7 +108,7 @@ struct Machine {
   }
 
   func print() {
-    println(expression.debugDescription)
+    println("‹\(expression.description)›")
   }
 }
 

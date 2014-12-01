@@ -25,3 +25,16 @@ machine = Machine(
           )
 
 machine.run()
+
+machine = Machine(
+            statement: If(
+              condition: LessThan(left: Variable(name: "x"), right: Number(value: 10)),
+              consequence: Assign(name: "y", expression: Number(value: 1)),
+              alternative: Assign(name: "y", expression: Number(value: 2))
+            ),
+            environment: [
+              "x": Number(value: 5)
+            ]
+          )
+
+machine.run()

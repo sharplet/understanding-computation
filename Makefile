@@ -1,10 +1,10 @@
 default: run
 
-run: main
+run: 1
 	@exec ./$<
 
-main:
-	xcrun -sdk macosx swiftc *.swift -o $@
+1:
+	xcrun -sdk macosx swiftc $@-*/*.swift -o $@
 
 clean:
-	@rm main
+	@rm 1

@@ -90,13 +90,38 @@ extension Multiply: Expression {
 }
 
 
+// Variables
+
+struct Variable: Expression {
+  let name: String
+
+  var description: String {
+    return name
+  }
+
+  var reducible: Bool {
+    return true
+  }
+
+  func reduce(environment: [String: Expression]) -> Expression {
+    return environment[name]!
+  }
+}
+
+
 // Machine
 
 struct Machine {
   var expression: Expression
+  var environment: [String: Expression]
+
+  init(expression: Expression, environment: [String: Expression] = [:]) {
+    self.expression = expression
+    self.environment = environment
+  }
 
   mutating func step() {
-    expression = expression.reduce([:])
+    expression = expression.reduce(environment)
   }
 
   mutating func run() {
@@ -115,11 +140,15 @@ struct Machine {
 
 // main
 
-var machine = Machine(expression:
-                Add(
-                  left: Multiply(left: Number(value: 1), right: Number(value: 2)),
-                  right: Multiply(left: Number(value: 3), right: Number(value: 4))
-                )
+var machine = Machine(
+                expression: Add(
+                  left: Multiply(left: Variable(name: "x"), right: Number(value: 2)),
+                  right: Multiply(left: Variable(name: "y"), right: Number(value: 4))
+                ),
+                environment: [
+                  "x": Number(value: 5),
+                  "y": Number(value: 1),
+                ]
               )
 
 machine.run()

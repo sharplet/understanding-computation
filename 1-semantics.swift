@@ -3,7 +3,7 @@ import Darwin
 
 protocol Expression: Printable {
   var reducible: Bool { get }
-  func reduce() -> Expression
+  func reduce(environment: [String: Expression]) -> Expression
 }
 
 
@@ -22,7 +22,7 @@ extension Number: Expression {
     return false
   }
 
-  func reduce() -> Expression {
+  func reduce(environment: [String: Expression]) -> Expression {
     abort()
   }
 }
@@ -44,12 +44,12 @@ extension Add: Expression {
     return true
   }
 
-  func reduce() -> Expression {
+  func reduce(environment: [String: Expression]) -> Expression {
     switch (left.reducible, right.reducible) {
     case (true, _):
-      return Add(left: left.reduce(), right: right)
+      return Add(left: left.reduce(environment), right: right)
     case (_, true):
-      return Add(left: left, right: right.reduce())
+      return Add(left: left, right: right.reduce(environment))
     default:
       let l = left as? Number
       let r = right as? Number
@@ -75,12 +75,12 @@ extension Multiply: Expression {
     return true
   }
 
-  func reduce() -> Expression {
+  func reduce(environment: [String: Expression]) -> Expression {
     switch (left.reducible, right.reducible) {
     case (true, _):
-      return Add(left: left.reduce(), right: right)
+      return Add(left: left.reduce(environment), right: right)
     case (_, true):
-      return Add(left: left, right: right.reduce())
+      return Add(left: left, right: right.reduce(environment))
     default:
       let l = left as? Number
       let r = right as? Number
@@ -96,7 +96,7 @@ struct Machine {
   var expression: Expression
 
   mutating func step() {
-    expression = expression.reduce()
+    expression = expression.reduce([:])
   }
 
   mutating func run() {

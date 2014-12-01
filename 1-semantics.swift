@@ -191,20 +191,20 @@ extension Dictionary {
 // Machine
 
 struct Machine {
-  var expression: Expression
+  var statement: Statement
   var environment: [String: Expression]
 
-  init(expression: Expression, environment: [String: Expression] = [:]) {
-    self.expression = expression
+  init(statement: Statement, environment: [String: Expression] = [:]) {
+    self.statement = statement
     self.environment = environment
   }
 
   mutating func step() {
-    expression = expression.reduce(environment)
+    (statement, environment) = statement.reduce(environment)
   }
 
   mutating func run() {
-    while expression.reducible {
+    while statement.reducible {
       print()
       step()
     }
@@ -212,7 +212,24 @@ struct Machine {
   }
 
   func print() {
-    println("‹\(expression.description)›")
+    let stmt = "‹\(statement.description)›"
+
+    let env = reduce(environment, []) { (var out: [String], entry: (String, Expression)) in
+      out.append("\(entry.0) = \(entry.1.description)")
+      return out
+    }
+
+    let output: String = {
+      if env.count > 0 {
+        let joined = join(", ", env)
+        return stmt + " (\(joined))"
+      }
+      else {
+        return stmt
+      }
+    }()
+
+    println(output)
   }
 }
 
@@ -220,7 +237,7 @@ struct Machine {
 // main
 
 var machine = Machine(
-                expression: Add(
+                statement: Add(
                   left: Multiply(left: Variable(name: "x"), right: Number(value: 2)),
                   right: Multiply(left: Variable(name: "y"), right: Number(value: 4))
                 ),
@@ -232,18 +249,17 @@ var machine = Machine(
 
 machine.run()
 
-var stmt = Assign(
-             name: "x",
-             expression: Add(
-               left: Number(value: 1),
-               right: Number(value: 2)
-             )
-           )
+machine = Machine(
+            statement: Assign(
+              name: "x",
+              expression: Add(
+                left: Variable(name: "x"),
+                right: Number(value: 2)
+              )
+            ),
+            environment: [
+              "x": Number(value: 1)
+            ]
+          )
 
-println("‹\(stmt.description)›")
-var env = [String: Expression]()
-var (newstmt, newenv) = stmt.reduce(env)
-println("stmt: ‹\(newstmt.description)›, env: ‹\(newenv.description)")
-var (newnewstmt, newnewenv) = newstmt.reduce(newenv)
-let x = "x"
-println("stmt: ‹\(newnewstmt.description)›, env: [\(x) = ‹\(newnewenv[x]!.description)›]")
+machine.run()

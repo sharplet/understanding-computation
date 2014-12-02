@@ -38,3 +38,12 @@ machine = Machine(
           )
 
 machine.run()
+
+machine = Machine(
+            statement: Sequence(
+              first: Assign(name: "x", expression: Add(left: Number(value: 1), right: Number(value: 1))),
+              second: Assign(name: "y", expression: Add(left: Variable(name: "x"), right: Number(value: 3)))
+            )
+          )
+
+machine.run()

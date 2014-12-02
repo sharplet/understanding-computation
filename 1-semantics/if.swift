@@ -4,7 +4,7 @@ struct If: Statement {
   let alternative: Statement
 
   var description: String {
-    return "if (\(condition.description)) { \(consequence.description) } else { \(alternative.description) }"
+    return "if (\(condition.description)) { \(consequence.description) }\nelse { \(alternative.description) }"
   }
 
   var reducible: Bool {

@@ -37,6 +37,18 @@ let machines = [
       second: Assign(name: "y", expression: Add(left: Variable(name: "x"), right: Number(3)))
     )
   ),
+  "while": Machine(
+    statement: While(
+      condition: LessThan(left: Variable(name: "x"), right: Number(5)),
+      body: Assign(
+        name: "x",
+        expression: Multiply(left: Variable(name: "x"), right: Number(3))
+      )
+    ),
+    environment: [
+      "x": Number(1)
+    ]
+  ),
 ]
 
 for (name, var machine) in machines {

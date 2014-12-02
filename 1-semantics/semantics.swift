@@ -15,15 +15,13 @@ protocol Expression: Statement {
 
 // Numberber
 
-struct Number {
+struct Number: Expression {
   let value: Int
 
   init(_ value: Int) {
     self.value = value
   }
-}
 
-extension Number: Expression {
   var description: String {
     return "\(value)"
   }
@@ -44,12 +42,10 @@ extension Number: Expression {
 
 // Addition
 
-struct Add {
+struct Add: Expression {
   let left: Expression
   let right: Expression
-}
 
-extension Add: Expression {
   var description: String {
     return "\(left.description) + \(right.description)"
   }
@@ -79,12 +75,10 @@ extension Add: Expression {
 
 // Multiply
 
-struct Multiply {
+struct Multiply: Expression {
   let left: Expression
   let right: Expression
-}
 
-extension Multiply: Expression {
   var description: String {
     return "\(left.description) * \(right.description)"
   }

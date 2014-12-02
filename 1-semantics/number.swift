@@ -81,9 +81,9 @@ struct Multiply: Expression {
   func reduce(environment: [String: Expression]) -> Expression {
     switch (left.reducible, right.reducible) {
     case (true, _):
-      return Add(left: left.reduce(environment), right: right)
+      return Multiply(left: left.reduce(environment), right: right)
     case (_, true):
-      return Add(left: left, right: right.reduce(environment))
+      return Multiply(left: left, right: right.reduce(environment))
     default:
       let l = left as? Number
       let r = right as? Number

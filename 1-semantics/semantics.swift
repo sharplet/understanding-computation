@@ -17,6 +17,10 @@ protocol Expression: Statement {
 
 struct Number {
   let value: Int
+
+  init(_ value: Int) {
+    self.value = value
+  }
 }
 
 extension Number: Expression {
@@ -67,7 +71,7 @@ extension Add: Expression {
     default:
       let l = left as? Number
       let r = right as? Number
-      return Number(value: l!.value + r!.value)
+      return Number(l!.value + r!.value)
     }
   }
 }
@@ -102,7 +106,7 @@ extension Multiply: Expression {
     default:
       let l = left as? Number
       let r = right as? Number
-      return Number(value: l!.value * r!.value)
+      return Number(l!.value * r!.value)
     }
   }
 }

@@ -1,10 +1,10 @@
 default: run
 
-run: 1
+run: small-step
 	@exec ./$<
 
-1:
+small-step:
 	xcrun -sdk macosx swiftc $@-*/*.swift -o $@
 
 clean:
-	@rm 1
+	@rm -f small-step

@@ -1,0 +1,12 @@
+require "rake/clean"
+
+file "finite-automata" => FileList["*.swift"] do |t|
+  sh "swiftc -o #{t.name} #{t.sources.join(" ")}"
+end
+CLEAN.include("finite-automata")
+
+task :run => "finite-automata" do |t|
+  exec "./#{t.source}"
+end
+
+task :default => :run

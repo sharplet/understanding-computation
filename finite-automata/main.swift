@@ -48,13 +48,8 @@ struct DFARulebook<S: State>: DebugPrintable {
     self.rules = rules
   }
 
-  func next(state: S, _ character: Character) -> S {
-    if let rule = ruleFor(state, character) {
-      return rule.follow()
-    }
-    else {
-      assert(false, "no matching rule found (state=\(state), character=\(character)")
-    }
+  func next(state: S, _ character: Character) -> S? {
+    return ruleFor(state, character)?.follow()
   }
 
   func ruleFor(state: S, _ character: Character) -> FARule<S>? {
@@ -69,13 +64,24 @@ struct DFARulebook<S: State>: DebugPrintable {
   }
 }
 
+extension Optional {
+  func flatmap <U> (f: T -> U?) -> U? {
+    switch self {
+      case .Some(let s): return f(s)
+      case .None:        return nil
+    }
+  }
+}
+
 struct DFA<S: State> {
-  var current: S
+  var current: S?
   let accept: [S]
   let rulebook: DFARulebook<S>
 
   mutating func read(#character: Character) {
-    current = rulebook.next(current, character)
+    current = current.flatmap { current in
+      self.rulebook.next(current, character)
+    }
   }
 
   mutating func read(#string: String) {
@@ -84,8 +90,8 @@ struct DFA<S: State> {
     }
   }
 
-  var accepting: Bool {
-    return contains(accept, current)
+  var accepting: Bool? {
+    return current.map { current in contains(self.accept, current) }
   }
 }
 
@@ -94,14 +100,19 @@ struct DFADesign<S: State> {
   let accept: [S]
   let rulebook: DFARulebook<S>
 
-  func accepts(string: String) -> Bool {
+  func accepts(string: String) -> Bool? {
     var dfa = DFA(current: start, accept: accept, rulebook: rulebook)
     dfa.read(string: string)
     return dfa.accepting
   }
 
   func test(string: String) -> String {
-    return "Accepts \"\(string)\"? \(accepts(string))"
+    if let result = accepts(string) {
+      return "Accepts \"\(string)\"? \(result)"
+    }
+    else {
+      return "Failed when testing \"\(string)\""
+    }
   }
 
   func test(strings: String...) -> [String] {
@@ -118,6 +129,6 @@ let rulebook = DFARulebook([
 let design = DFADesign(start: 1, accept: [3], rulebook: rulebook)
 
 debugPrintln(rulebook)
-for result in design.test("a", "baa", "baba") {
+for result in design.test("a", "baa", "baba", "c") {
   println(result)
 }

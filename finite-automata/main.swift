@@ -17,6 +17,9 @@ let rulebook2 = NFARulebook([
   FARule(3, transition: ("a", 4)), FARule(3, transition: ("b", 4))
 ])
 
-println(rulebook2.next(1, "b"))
-println(Set(1,2).flatmap { s in rulebook2.next(s, "a") })
-println(Set(1,3).flatmap { s in rulebook2.next(s, "b") })
+let design2 = NFADesign(start: 1, accept: [4], rulebook: rulebook2)
+
+println(rulebook2)
+for result in design2.test("bab", "bbbbb", "bbabb", "c") {
+  println(result)
+}

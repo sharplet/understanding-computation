@@ -24,6 +24,10 @@ struct Set<T: protocol<Hashable, Printable>>: Printable {
     return "<Set:{\(contents)}>"
   }
 
+  var count: Int {
+    return _store.count
+  }
+
   // Operations
 
   func contains(t: T) -> Bool {

@@ -1,3 +1,5 @@
+import Set
+
 struct NFARulebook<S: protocol<State, Hashable>>: Printable {
   typealias Rules = [FARule<S>]
 
@@ -8,7 +10,7 @@ struct NFARulebook<S: protocol<State, Hashable>>: Printable {
   }
 
   func next(state: S, _ character: Character) -> Set<S> {
-    return Set(rulesFor(state, character)).mapm(FARule.follow)
+    return Set(rulesFor(state, character)).map { $0.follow() }
   }
 
   func rulesFor(state: S, _ character: Character) -> [FARule<S>] {
@@ -29,7 +31,7 @@ struct NFA<S: State> {
   let rulebook: NFARulebook<S>
 
   mutating func read(#character: Character) {
-    current = current.flatmap { current in
+    current = current.flatMap { current in
       self.rulebook.next(current, character)
     }
   }
@@ -54,7 +56,7 @@ struct NFADesign<S: State> {
   let rulebook: NFARulebook<S>
 
   func accepts(string: String) -> Bool? {
-    var nfa = NFA(current: Set(start), accept: Set(accept), rulebook: rulebook)
+    var nfa = NFA(current: Set([start]), accept: Set(accept), rulebook: rulebook)
     nfa.read(string: string)
     return nfa.accepting
   }

@@ -1,7 +1,11 @@
 require "rake/clean"
 
+BUILT_FRAMEWORKS_DIR = "Carthage.build/Mac"
+
 file "finite-automata" => FileList["*.swift"] do |t|
-  sh "swiftc -o #{t.name} #{t.sources.join(" ")}"
+  sh "xcrun -sdk macosx swiftc -o #{t.name} " \
+     "-F#{BUILT_FRAMEWORKS_DIR} -Xlinker -rpath -Xlinker #{BUILT_FRAMEWORKS_DIR} " \
+      "-- #{t.sources.join(" ")}"
 end
 CLEAN.include("finite-automata")
 

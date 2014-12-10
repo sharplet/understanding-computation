@@ -1,1 +1,6 @@
+# Executable
 finite-automata
+
+# Carthage
+Carthage.build/
+Carthage.checkout/

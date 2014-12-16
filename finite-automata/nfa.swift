@@ -1,7 +1,7 @@
 import Set
 
-struct NFARulebook<S: protocol<State, Hashable>>: Printable {
-  typealias Rules = [FARule<S>]
+struct NFARulebook<S: State>: Printable {
+  typealias Rules = Set<FARule<S>>
 
   let rules: Rules
 
@@ -9,12 +9,17 @@ struct NFARulebook<S: protocol<State, Hashable>>: Printable {
     self.rules = rules
   }
 
-  func next(state: S, _ character: Character) -> Set<S> {
+  func next(state: S, _ character: Character?) -> Set<S> {
     return Set(rulesFor(state, character)).map { $0.follow() }
   }
 
-  func rulesFor(state: S, _ character: Character) -> [FARule<S>] {
-    return rules.select { rule in
+  func freeMovesFor(states: Set<S>) -> Set<S> {
+    let more = states.flatMap { self.next($0, nil) }
+    return more.subset(states) ? states : freeMovesFor(states + more)
+  }
+
+  func rulesFor(state: S, _ character: Character?) -> Rules {
+    return rules.filter { rule in
       rule.appliesTo(state, character)
     }
   }
@@ -31,8 +36,8 @@ struct NFA<S: State> {
   let rulebook: NFARulebook<S>
 
   mutating func read(#character: Character) {
-    current = current.flatMap { current in
-      self.rulebook.next(current, character)
+    current = freeMovesFor(current).flatMap { state in
+      self.rulebook.next(state, character)
     }
   }
 
@@ -40,6 +45,10 @@ struct NFA<S: State> {
     for char in string {
       read(character: char)
     }
+  }
+
+  func freeMovesFor(states: Set<S>) -> Set<S> {
+    return rulebook.freeMovesFor(states)
   }
 
   var accepting: Bool? {

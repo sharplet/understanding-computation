@@ -56,7 +56,7 @@ struct NFA<S: State> {
     if current.count == 0 {
       return nil
     }
-    return current.intersection(accept).count > 0
+    return (current & accept).count > 0
   }
 }
 

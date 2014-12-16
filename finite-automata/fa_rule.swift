@@ -1,7 +1,7 @@
 typealias State = protocol<Hashable, Printable>
 
 struct FARule<S: State>: Printable, Hashable {
-  typealias Transition = (char: Character?, dest: S)
+  typealias Transition = (source: EventSource, destination: S)
 
   let state: S
   let transition: Transition
@@ -11,11 +11,11 @@ struct FARule<S: State>: Printable, Hashable {
     self.transition = transition
   }
 
-  func appliesTo(state: S, _ character: Character?) -> Bool {
-    switch (transition.char, character) {
-    case (.Some(let thisChar), .Some(let otherChar)):
-      return self.state == state && thisChar == otherChar
-    case (.None, .None):
+  func appliesTo(state: S, _ event: EventSource) -> Bool {
+    switch (transition.source, event) {
+    case (.Char(let char), .Char(let other)):
+      return self.state == state && char == other
+    case (.Free, .Free):
       return self.state == state
     default:
       return false
@@ -23,30 +23,20 @@ struct FARule<S: State>: Printable, Hashable {
   }
 
   func follow() -> S {
-    return transition.dest
+    return transition.destination
   }
 
   var description: String {
-    return "<FARule \(state) --\(charDescription)--> \(transition.dest)>"
+    return "<FARule \(state) --\(transition.source)--> \(transition.destination)>"
   }
 
   var hashValue: Int {
-    return state.hashValue ^ charHashValue ^ transition.dest.hashValue
-  }
-
-  // MARK: Private
-
-  private var charDescription: Character {
-    return transition.char ?? "*"
-  }
-
-  private var charHashValue: Int {
-    return transition.char?.hashValue ?? 0
+    return state.hashValue ^ transition.source.hashValue ^ transition.destination.hashValue
   }
 }
 
 func == <S: State> (lhs: FARule<S>, rhs: FARule<S>) -> Bool {
   return lhs.state == rhs.state
-      && lhs.transition.char == rhs.transition.char
-      && lhs.transition.dest == rhs.transition.dest
+      && lhs.transition.source == rhs.transition.source
+      && lhs.transition.destination == rhs.transition.destination
 }

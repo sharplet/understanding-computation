@@ -9,8 +9,8 @@ struct NFARulebook<S: State>: Printable {
     self.rules = rules
   }
 
-  func next(state: S, _ character: Character?) -> Set<S> {
-    return Set(rulesFor(state, character)).map { $0.follow() }
+  func next(state: S, _ event: EventSource) -> Set<S> {
+    return rulesFor(state, event).map { $0.follow() }
   }
 
   func freeMovesFor(states: Set<S>) -> Set<S> {
@@ -18,9 +18,9 @@ struct NFARulebook<S: State>: Printable {
     return more.subset(states) ? states : freeMovesFor(states + more)
   }
 
-  func rulesFor(state: S, _ character: Character?) -> Rules {
+  func rulesFor(state: S, _ event: EventSource) -> Rules {
     return rules.filter { rule in
-      rule.appliesTo(state, character)
+      rule.appliesTo(state, event)
     }
   }
 
@@ -36,8 +36,9 @@ struct NFA<S: State> {
   let rulebook: NFARulebook<S>
 
   mutating func read(#character: Character) {
+    let event = EventSource.Char(character)
     current = freeMovesFor(current).flatMap { state in
-      self.rulebook.next(state, character)
+      self.rulebook.next(state, event)
     }
   }
 

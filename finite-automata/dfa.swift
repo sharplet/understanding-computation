@@ -7,13 +7,13 @@ struct DFARulebook<S: State>: DebugPrintable {
     self.rules = rules
   }
 
-  func next(state: S, _ character: Character) -> S? {
-    return ruleFor(state, character)?.follow()
+  func next(state: S, _ event: EventSource) -> S? {
+    return ruleFor(state, event)?.follow()
   }
 
-  func ruleFor(state: S, _ character: Character) -> FARule<S>? {
+  func ruleFor(state: S, _ event: EventSource) -> FARule<S>? {
     return rules.detect { rule in
-      rule.appliesTo(state, character)
+      rule.appliesTo(state, event)
     }
   }
 
@@ -29,8 +29,9 @@ struct DFA<S: State> {
   let rulebook: DFARulebook<S>
 
   mutating func read(#character: Character) {
+    let event = EventSource.Char(character)
     current = current.flatmap { current in
-      self.rulebook.next(current, character)
+      self.rulebook.next(current, event)
     }
   }
 

@@ -36,3 +36,8 @@ let design3 = NFADesign(start: 1, accept: [2, 4], rulebook: rulebook3)
 for result in design3.test("aa", "aaa", "aaaaa", "aaaaaa") {
   println(result)
 }
+
+println()
+println("Regex:")
+let pattern = Repeat(Choose(Concatenate(Literal("a"), Literal("b")), Literal("a")))
+println("/\(pattern)/")

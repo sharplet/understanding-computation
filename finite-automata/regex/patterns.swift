@@ -1,6 +1,13 @@
+import Set
+
+
 // MARK: Pattern protocol
 
-protocol PatternType: Printable {
+protocol NFAConvertible {
+  func toNFADesign() -> NFADesign<NFAState>
+}
+
+protocol PatternType: Printable, NFAConvertible {
   var precedence: Int { get }
   func bracket<Outer: PatternType>(outer: Outer) -> String
 }
@@ -26,6 +33,13 @@ struct Empty: PatternType {
   func bracket<Outer: PatternType>(outer: Outer) -> String {
     return main.bracket(self, outer)
   }
+
+  func toNFADesign() -> NFADesign<NFAState> {
+    let start = NFAState()
+    let accept = start
+    let rulebook = NFARulebook(Set<FARule<NFAState>>())
+    return NFADesign(start: start, accept: [accept], rulebook: rulebook)
+  }
 }
 
 struct Literal: PatternType {
@@ -42,6 +56,14 @@ struct Literal: PatternType {
 
   func bracket<Outer: PatternType>(outer: Outer) -> String {
     return main.bracket(self, outer)
+  }
+
+  func toNFADesign() -> NFADesign<NFAState> {
+    let start = NFAState()
+    let accept = NFAState()
+    let rule = FARule(start, transition: (EventSource.Char(character), accept))
+    let rulebook = NFARulebook([rule])
+    return NFADesign(start: start, accept: [accept], rulebook: rulebook)
   }
 }
 
@@ -62,6 +84,21 @@ struct Concatenate<Left: PatternType, Right: PatternType>: PatternType {
 
   func bracket<Outer: PatternType>(outer: Outer) -> String {
     return main.bracket(self, outer)
+  }
+
+  func toNFADesign() -> NFADesign<NFAState> {
+    let leftDesign = left.toNFADesign()
+    let rightDesign = right.toNFADesign()
+
+    let start = leftDesign.start
+    let accept = rightDesign.accept
+    let rules = leftDesign.rulebook.rules + rightDesign.rulebook.rules
+    let joiningRules = leftDesign.accept.map { acceptState in
+      FARule(acceptState, transition: (nil, rightDesign.start))
+    }
+    let rulebook = NFARulebook(rules + joiningRules)
+
+    return NFADesign(start: start, accept: accept, rulebook: rulebook)
   }
 
   // MARK: Private
@@ -90,6 +127,21 @@ struct Choose<Left: PatternType, Right: PatternType>: PatternType {
     return main.bracket(self, outer)
   }
 
+  func toNFADesign() -> NFADesign<NFAState> {
+    let leftDesign = left.toNFADesign()
+    let rightDesign = right.toNFADesign()
+
+    let start = NFAState()
+    let accept = leftDesign.accept + rightDesign.accept
+    let rules = leftDesign.rulebook.rules + rightDesign.rulebook.rules
+    let joiningRules = [leftDesign, rightDesign].map { design in
+      FARule(start, transition: (nil, design.start))
+    }
+    let rulebook = NFARulebook(rules + joiningRules)
+
+    return NFADesign(start: start, accept: accept, rulebook: rulebook)
+  }
+
   // MARK: Private
 
   private var patterns: [PatternType] {
@@ -111,5 +163,18 @@ struct Repeat<Repeated: PatternType>: PatternType {
 
   func bracket<Outer: PatternType>(outer: Outer) -> String {
     return main.bracket(self, outer)
+  }
+
+  func toNFADesign() -> NFADesign<NFAState> {
+    let design = pattern.toNFADesign()
+
+    let start = NFAState()
+    let accept = design.accept + [start]
+    let joiningRules = accept.map { accept in
+      FARule(accept, transition: (nil, design.start))
+    }
+    let rulebook = NFARulebook(design.rulebook.rules + joiningRules)
+
+    return NFADesign(start: start, accept: accept, rulebook: rulebook)
   }
 }

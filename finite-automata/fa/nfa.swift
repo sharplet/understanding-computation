@@ -72,12 +72,8 @@ struct NFADesign<S: State> {
   }
 
   func test(string: String) -> String {
-    if let result = accepts(string) {
-      return "Accepts \"\(string)\"? \(result)"
-    }
-    else {
-      return "Failed when testing \"\(string)\""
-    }
+    let result = accepts(string) ?? false
+    return "Accepts \"\(string)\"? \(result)"
   }
 
   func test(strings: String...) -> [String] {

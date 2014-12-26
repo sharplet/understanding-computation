@@ -71,16 +71,12 @@ struct NFADesign<S: State> {
     return nfa.accepting
   }
 
-  func test(string: String) -> String {
-    if let result = accepts(string) {
-      return "Accepts \"\(string)\"? \(result)"
-    }
-    else {
-      return "Failed when testing \"\(string)\""
-    }
+  func test(#string: String) -> String {
+    let result = accepts(string) ?? false
+    return "Accepts \"\(string)\"? \(result)"
   }
 
   func test(strings: String...) -> [String] {
-    return strings.map { string in self.test(string) }
+    return strings.map { string in self.test(string: string) }
   }
 }

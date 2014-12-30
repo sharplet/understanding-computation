@@ -76,9 +76,11 @@ public struct Stack<T>: StackType, Printable, ArrayLiteralConvertible {
     // MARK: Printable
 
     public var description: String {
-        let front = (top.map { [$0] } ?? []).map { "(\($0))" }
+        let front = top.map { ["(\($0))"] }
         let back = tail.map(toString)
-        return "".join(front + back)
+        let full = front.map { front in "".join(front + back) }
+        let contents = full ?? "empty"
+        return "<Stack:\(contents)>"
     }
 
 

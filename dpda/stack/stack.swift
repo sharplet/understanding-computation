@@ -35,6 +35,21 @@ public struct Stack<T>: StackType, Printable, ArrayLiteralConvertible {
         return top.map { ($0, Stack(self.tail)) }
     }
 
+    public func pop(count: Int) -> ([T], Stack) {
+        if let (tip, tail) = pop() {
+            if count > 1 {
+                let popped = tail.pop(count - 1)
+                return ([tip] + popped.0, popped.1)
+            }
+            else {
+                return ([tip], tail)
+            }
+        }
+        else {
+            return ([], self)
+        }
+    }
+
     public var top: T? {
         return values.first
     }

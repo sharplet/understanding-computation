@@ -4,7 +4,7 @@ protocol StackType {
     typealias Element
 
     /// Push an item onto the stack. Returns a new stack.
-    func push(value: Element) -> Self
+    func push(value: Element) -> ((), Self)
 
     /// Pop an item off the stack. Returns a tuple containing the item and a new stack of the remaining elements.
     func pop() -> (Element, Self)?
@@ -27,8 +27,8 @@ public struct Stack<T>: StackType, Printable, ArrayLiteralConvertible {
 
     // MARK: StackType
 
-    public func push(value: T) -> Stack {
-        return Stack([value] + values)
+    public func push(value: T) -> ((), Stack) {
+        return ((), Stack([value] + values))
     }
 
     public func pop() -> (T, Stack)? {

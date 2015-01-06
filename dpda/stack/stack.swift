@@ -9,6 +9,7 @@ func pop<T>() -> State<Stack<T>, T?> {
 }
 
 func pop<T>(count: Int) -> State<Stack<T>, [T]> {
+    precondition(count >= 0, "can't pop a negative number of times! (\(count))")
     switch count {
     case 0:
         return yield([])

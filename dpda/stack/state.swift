@@ -50,6 +50,16 @@ public func >>><S, A, B>(a: State<S, A>, b: State<S, B>) -> State<S, B> {
     return a >>- { _ in b }
 }
 
+infix operator <| { precedence 0 associativity right }
+func <| <S, A> (state: State<S, A>, start: S) -> (A, S) {
+    return state.run(start)
+}
+
+infix operator |> { precedence 0 associativity left }
+func |> <S, A> (start: S, state: State<S, A>) -> (A, S) {
+    return state.run(start)
+}
+
 public func get<S>() -> State<S, S> {
     return State { s in (s, s) }
 }

@@ -1,19 +1,27 @@
-/// Describes an interface for an immutable Stack type.
-protocol StackType {
-    /// The type of the elements in the stack.
-    typealias Element
-
-    /// Push an item onto the stack. Returns a new stack.
-    func push(value: Element) -> ((), Self)
-
-    /// Pop an item off the stack. Returns a tuple containing the item and a new stack of the remaining elements.
-    func pop() -> (Element, Self)?
-
-    /// Inspect the top of the stack.
-    var top: Element? { get }
+/// Push an item onto the stack. Returns a new stack.
+func push<T>(value: T) -> State<Stack<T>, ()> {
+    return State { s in ((),Stack([value] + s.values)) }
 }
 
-public struct Stack<T>: StackType, Printable, ArrayLiteralConvertible {
+/// Pop an item off the stack. Returns a tuple containing the item and a new stack of the remaining elements.
+func pop<T>() -> State<Stack<T>, T?> {
+    return State { s in (s.top, (s.top.map { _ in Stack(dropFirst(s.values)) } ?? s)) }
+}
+
+func pop<T>(count: Int) -> State<Stack<T>, [T]> {
+    switch count {
+    case 0:
+        return yield([])
+    default:
+        return
+            pop().map(Array.fromOptional) >>- { head in
+            pop(count - 1) >>- { tail in
+                yield(head + tail)
+            }}
+    }
+}
+
+public struct Stack<T>: Printable, ArrayLiteralConvertible {
     // MARK: Initialisers
 
     public init<S: SequenceType where S.Generator.Element == T>(_ sequence: S) {
@@ -22,32 +30,6 @@ public struct Stack<T>: StackType, Printable, ArrayLiteralConvertible {
 
     public init() {
         self.init([])
-    }
-
-
-    // MARK: StackType
-
-    public func push(value: T) -> ((), Stack) {
-        return ((), Stack([value] + values))
-    }
-
-    public func pop() -> (T, Stack)? {
-        return top.map { ($0, Stack(self.tail)) }
-    }
-
-    public func pop(count: Int) -> ([T], Stack) {
-        if let (tip, tail) = pop() {
-            if count > 1 {
-                let popped = tail.pop(count - 1)
-                return ([tip] + popped.0, popped.1)
-            }
-            else {
-                return ([tip], tail)
-            }
-        }
-        else {
-            return ([], self)
-        }
     }
 
     public var top: T? {

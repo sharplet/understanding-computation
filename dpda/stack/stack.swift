@@ -1,34 +1,4 @@
-/// Push an item onto the stack. Returns a new stack.
-func push<T>(value: T) -> State<Stack<T>, ()> {
-    return State { s in ((),Stack([value] + s.values)) }
-}
-
-/// Pop an item off the stack. Returns a tuple containing the item and a new stack of the remaining elements.
-func pop<T>() -> State<Stack<T>, T?> {
-    return State { s in
-        if let head = s.top {
-            return (head, Stack(dropFirst(s.values)))
-        }
-        else {
-            return (nil, s)
-        }
-    }
-}
-
-func pop<T>(count: Int) -> State<Stack<T>, [T]> {
-    precondition(count >= 0, "can't pop a negative number of times! (\(count))")
-    switch count {
-    case 0:
-        return yield([])
-    default:
-        return
-            pop().map(Array.fromOptional) >>- { head in
-            pop(count - 1) >>- { tail in
-                yield(head + tail)
-            }}
-    }
-}
-
+/// An immutable stack with operations in the State monad.
 public struct Stack<T>: Printable, ArrayLiteralConvertible {
     // MARK: Initialisers
 
@@ -78,5 +48,40 @@ public struct Stack<T>: Printable, ArrayLiteralConvertible {
         let start = min(1, count)
         let end = max(start, count)
         return values[start..<end]
+    }
+}
+
+
+// MARK: Operations
+
+/// Stateful operation to produce a new stack with `value` pushed onto it.
+func push<T>(value: T) -> State<Stack<T>, ()> {
+    return State { s in ((),Stack([value] + s.values)) }
+}
+
+/// Stateful operation to pop the top element of a stack. If the stack has no elements, the result of this operation will be `nil` and the stack unchanged.
+func pop<T>() -> State<Stack<T>, T?> {
+    return State { s in
+        if let head = s.top {
+            return (head, Stack(dropFirst(s.values)))
+        }
+        else {
+            return (nil, s)
+        }
+    }
+}
+
+/// Stateful operation to pop up to `count` elements from the stack and collect them as an array.
+func pop<T>(count: Int) -> State<Stack<T>, [T]> {
+    precondition(count >= 0, "can't pop a negative number of times! (\(count))")
+    switch count {
+    case 0:
+        return yield([])
+    default:
+        return
+            pop().map(Array.fromOptional) >>- { head in
+            pop(count - 1) >>- { tail in
+                yield(head + tail)
+            }}
     }
 }

@@ -40,26 +40,22 @@ public struct Stack<T>: Printable, ArrayLiteralConvertible {
         self.init([])
     }
 
-    public var top: T? {
-        return values.first
+
+    // MARK: ArrayLiteralConvertible
+
+    public init(arrayLiteral elements: T...) {
+        self.init(elements)
     }
 
 
     // MARK: Properties
 
-    public var count: Int {
-        return values.count
+    public var top: T? {
+        return values.first
     }
 
-
-    // MARK: Private
-
-    private let values: [T]
-
-    private var tail: Slice<T> {
-        let start = min(1, count)
-        let end = max(start, count)
-        return values[start..<end]
+    public var count: Int {
+        return values.count
     }
 
 
@@ -74,9 +70,13 @@ public struct Stack<T>: Printable, ArrayLiteralConvertible {
     }
 
 
-    // MARK: ArrayLiteralConvertible
+    // MARK: Private
 
-    public init(arrayLiteral elements: T...) {
-        self.init(elements)
+    private let values: [T]
+
+    private var tail: Slice<T> {
+        let start = min(1, count)
+        let end = max(start, count)
+        return values[start..<end]
     }
 }

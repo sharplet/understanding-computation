@@ -5,7 +5,14 @@ func push<T>(value: T) -> State<Stack<T>, ()> {
 
 /// Pop an item off the stack. Returns a tuple containing the item and a new stack of the remaining elements.
 func pop<T>() -> State<Stack<T>, T?> {
-    return State { s in (s.top, (s.top.map { _ in Stack(dropFirst(s.values)) } ?? s)) }
+    return State { s in
+        if let head = s.top {
+            return (head, Stack(dropFirst(s.values)))
+        }
+        else {
+            return (nil, s)
+        }
+    }
 }
 
 func pop<T>(count: Int) -> State<Stack<T>, [T]> {

@@ -55,12 +55,12 @@ public struct Stack<T>: Printable, ArrayLiteralConvertible {
 // MARK: Operations
 
 /// Stateful operation to produce a new stack with `value` pushed onto it.
-func push<T>(value: T) -> State<Stack<T>, ()> {
+public func push<T>(value: T) -> State<Stack<T>, ()> {
     return State { s in ((),Stack([value] + s.values)) }
 }
 
 /// Stateful operation to pop the top element of a stack. If the stack has no elements, the result of this operation will be `nil` and the stack unchanged.
-func pop<T>() -> State<Stack<T>, T?> {
+public func pop<T>() -> State<Stack<T>, T?> {
     return State { s in
         if let head = s.top {
             return (head, Stack(dropFirst(s.values)))
@@ -72,7 +72,7 @@ func pop<T>() -> State<Stack<T>, T?> {
 }
 
 /// Stateful operation to pop up to `count` elements from the stack and collect them as an array.
-func pop<T>(count: Int) -> State<Stack<T>, [T]> {
+public func pop<T>(count: Int) -> State<Stack<T>, [T]> {
     precondition(count >= 0, "can't pop a negative number of times! (\(count))")
     switch count {
     case 0:

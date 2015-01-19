@@ -10,7 +10,6 @@
 		4A2EEAE81A4D678D00561AA3 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2EEAE71A4D678D00561AA3 /* main.swift */; };
 		4A2EEAEB1A4D67F500561AA3 /* stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2EEAEA1A4D67F500561AA3 /* stack.swift */; };
 		4AE766E11A5C92DC0006EE35 /* array_ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AE766E01A5C92DC0006EE35 /* array_ext.swift */; };
-		4AE766E41A5D0FC90006EE35 /* state.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AE766E31A5D0FC90006EE35 /* state.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -30,7 +29,6 @@
 		4A2EEAE71A4D678D00561AA3 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		4A2EEAEA1A4D67F500561AA3 /* stack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = stack.swift; sourceTree = "<group>"; };
 		4AE766E01A5C92DC0006EE35 /* array_ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = array_ext.swift; sourceTree = "<group>"; };
-		4AE766E31A5D0FC90006EE35 /* state.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = state.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,7 +62,6 @@
 			isa = PBXGroup;
 			children = (
 				4A2EEAE91A4D67F500561AA3 /* stack */,
-				4AE766E21A5D0FC90006EE35 /* state */,
 				4A2EEAE71A4D678D00561AA3 /* main.swift */,
 			);
 			name = dpda;
@@ -77,14 +74,6 @@
 				4A2EEAEA1A4D67F500561AA3 /* stack.swift */,
 			);
 			path = stack;
-			sourceTree = "<group>";
-		};
-		4AE766E21A5D0FC90006EE35 /* state */ = {
-			isa = PBXGroup;
-			children = (
-				4AE766E31A5D0FC90006EE35 /* state.swift */,
-			);
-			path = state;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -146,7 +135,6 @@
 				4A2EEAEB1A4D67F500561AA3 /* stack.swift in Sources */,
 				4AE766E11A5C92DC0006EE35 /* array_ext.swift in Sources */,
 				4A2EEAE81A4D678D00561AA3 /* main.swift in Sources */,
-				4AE766E41A5D0FC90006EE35 /* state.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

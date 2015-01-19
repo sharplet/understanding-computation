@@ -18,10 +18,26 @@ public struct Stack<T>: Printable, ArrayLiteralConvertible {
     }
 
 
+    // MARK: Operations
+
+    mutating func push(x: T) {
+        values.append(x)
+    }
+
+    mutating func pop() -> T? {
+        if let top = self.top {
+            return values.removeLast()
+        }
+        else {
+            return nil
+        }
+    }
+
+
     // MARK: Properties
 
     public var top: T? {
-        return values.first
+        return values.last
     }
 
     public var count: Int {
@@ -42,46 +58,11 @@ public struct Stack<T>: Printable, ArrayLiteralConvertible {
 
     // MARK: Private
 
-    private let values: [T]
+    private var values: [T]
 
     private var tail: Slice<T> {
         let start = min(1, count)
         let end = max(start, count)
         return values[start..<end]
-    }
-}
-
-
-// MARK: Operations
-
-/// Stateful operation to produce a new stack with `value` pushed onto it.
-public func push<T>(value: T) -> State<Stack<T>, ()> {
-    return State { s in ((),Stack([value] + s.values)) }
-}
-
-/// Stateful operation to pop the top element of a stack. If the stack has no elements, the result of this operation will be `nil` and the stack unchanged.
-public func pop<T>() -> State<Stack<T>, T?> {
-    return State { s in
-        if let head = s.top {
-            return (head, Stack(dropFirst(s.values)))
-        }
-        else {
-            return (nil, s)
-        }
-    }
-}
-
-/// Stateful operation to pop up to `count` elements from the stack and collect them as an array.
-public func pop<T>(count: Int) -> State<Stack<T>, [T]> {
-    precondition(count >= 0, "can't pop a negative number of times! (\(count))")
-    switch count {
-    case 0:
-        return yield([])
-    default:
-        return
-            pop().map(Array.fromOptional) >>- { head in
-            pop(count - 1) >>- { tail in
-                yield(head + tail)
-            }}
     }
 }

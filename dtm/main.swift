@@ -1,5 +1,18 @@
-import Set
-
-let s = Set(1,2,3)
-
-println(s)
+var tape = Tape(["1", "2", "3", "4"], "5", [], "_")
+println(tape)
+tape.moveLeft()
+println(tape)
+tape.moveLeft()
+println(tape)
+tape.moveLeft()
+println(tape)
+tape.moveLeft()
+println(tape)
+tape.moveLeft()
+println(tape)
+tape.moveLeft()
+println(tape)
+for _ in 1...10 {
+    tape.moveRight()
+}
+println(tape)

@@ -5,16 +5,12 @@ let rulebook = Rulebook(rules: [
     Rule(state: 2, character: nil, next: 1, toPop: "$", toPush: ["$"]),
 ])
 
-func test(string: String) -> Bool {
-    var dpda = DPDA(start: 1, stack: Stack(["$"]), accept: [1], rulebook: rulebook)
-    dpda.read(string)
-    return dpda.accepting
-}
+let design = DPDADesign(start: 1, bottom: "$", accept: [1], rulebook: rulebook)
 
-println(test("(()"))
-println(test("))()"))
-println(test("(((((((((())))))))))"))
-println(test("()(())((()))(()(()))"))
+println(design.accepts("(()"))
+println(design.accepts("))()"))
+println(design.accepts("(((((((((())))))))))"))
+println(design.accepts("()(())((()))(()(()))"))
 
 var dpda = DPDA(start: 1, stack: Stack(["$"]), accept: [1], rulebook: rulebook)
 dpda.read("(()(")

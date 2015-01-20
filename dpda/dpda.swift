@@ -31,3 +31,16 @@ struct DPDA<StateT: Hashable, StackT: Equatable> {
         }
     }
 }
+
+struct DPDADesign<StateT: Hashable, StackT: Equatable> {
+    let start: StateT
+    let bottom: StackT
+    let accept: [StateT]
+    let rulebook: Rulebook<StateT, StackT>
+
+    func accepts(string: String) -> Bool {
+        var dpda = DPDA(start: start, stack: Stack([bottom]), accept: accept, rulebook: rulebook)
+        dpda.read(string)
+        return dpda.accepting
+    }
+}

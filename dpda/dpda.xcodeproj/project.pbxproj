@@ -7,24 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4A0B24101A6CDBA6009BA69A /* pdarule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0B240F1A6CDBA6009BA69A /* pdarule.swift */; };
+		4A0B24121A6CE1B1009BA69A /* dpda.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0B24111A6CE1B1009BA69A /* dpda.swift */; };
+		4A0B24161A6CE573009BA69A /* optional_ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0B24151A6CE573009BA69A /* optional_ext.swift */; };
 		4A2EEAE81A4D678D00561AA3 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2EEAE71A4D678D00561AA3 /* main.swift */; };
 		4A2EEAEB1A4D67F500561AA3 /* stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2EEAEA1A4D67F500561AA3 /* stack.swift */; };
 		4AE766E11A5C92DC0006EE35 /* array_ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AE766E01A5C92DC0006EE35 /* array_ext.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		4A2EEADA1A4D672800561AA3 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
+		4A0B240F1A6CDBA6009BA69A /* pdarule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pdarule.swift; sourceTree = "<group>"; };
+		4A0B24111A6CE1B1009BA69A /* dpda.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = dpda.swift; sourceTree = "<group>"; };
+		4A0B24151A6CE573009BA69A /* optional_ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = optional_ext.swift; sourceTree = "<group>"; };
 		4A2EEADC1A4D672800561AA3 /* dpda */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = dpda; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A2EEAE71A4D678D00561AA3 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		4A2EEAEA1A4D67F500561AA3 /* stack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = stack.swift; sourceTree = "<group>"; };
@@ -63,6 +57,9 @@
 			children = (
 				4A2EEAE91A4D67F500561AA3 /* stack */,
 				4A2EEAE71A4D678D00561AA3 /* main.swift */,
+				4A0B240F1A6CDBA6009BA69A /* pdarule.swift */,
+				4A0B24111A6CE1B1009BA69A /* dpda.swift */,
+				4A0B24151A6CE573009BA69A /* optional_ext.swift */,
 			);
 			name = dpda;
 			sourceTree = "<group>";
@@ -85,7 +82,6 @@
 			buildPhases = (
 				4A2EEAD81A4D672800561AA3 /* Sources */,
 				4A2EEAD91A4D672800561AA3 /* Frameworks */,
-				4A2EEADA1A4D672800561AA3 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -132,9 +128,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A0B24121A6CE1B1009BA69A /* dpda.swift in Sources */,
 				4A2EEAEB1A4D67F500561AA3 /* stack.swift in Sources */,
+				4A0B24101A6CDBA6009BA69A /* pdarule.swift in Sources */,
 				4AE766E11A5C92DC0006EE35 /* array_ext.swift in Sources */,
 				4A2EEAE81A4D678D00561AA3 /* main.swift in Sources */,
+				4A0B24161A6CE573009BA69A /* optional_ext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,6 +218,11 @@
 		4A2EEAE41A4D672800561AA3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -226,6 +230,11 @@
 		4A2EEAE51A4D672800561AA3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

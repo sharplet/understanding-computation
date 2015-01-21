@@ -28,12 +28,16 @@ struct DTM<T: Hashable> {
         return (current?.state).map { s in self.accept.contains(s) } ?? false
     }
 
+    var stuck: Bool {
+        return current == nil
+    }
+
     mutating func step() {
         current = current.flatMap { c in self.rulebook.nextConfiguration(c) }
     }
 
     mutating func run() {
-        while !accepting {
+        while !(accepting || stuck) {
             step()
         }
     }

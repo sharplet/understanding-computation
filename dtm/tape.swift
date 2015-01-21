@@ -1,4 +1,9 @@
 struct Tape: Printable {
+    enum Direction {
+        case Left
+        case Right
+    }
+
     var left: [Character]
     var middle: Character
     var right: [Character]
@@ -15,14 +20,18 @@ struct Tape: Printable {
         middle = char
     }
 
-    mutating func moveLeft() {
-        right.append(middle)
-        middle = left.last.map { _ in self.left.removeLast() } ?? blank
+    mutating func move(direction: Direction) {
+        switch direction {
+        case .Left:
+            shiftCharacter(from: &left, to: &right)
+        case .Right:
+            shiftCharacter(from: &right, to: &left)
+        }
     }
 
-    mutating func moveRight() {
-        left.append(middle)
-        middle = right.last.map { _ in self.right.removeLast() } ?? blank
+    private mutating func shiftCharacter(inout #from: [Character], inout to: [Character]) {
+        to.append(middle)
+        middle = from.last.map { _ in from.removeLast() } ?? blank
     }
 
     var description: String {

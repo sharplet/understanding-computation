@@ -20,7 +20,7 @@ struct Tape: Printable {
         middle = char
     }
 
-    mutating func move(direction: Direction) {
+    mutating func moveHead(direction: Direction) {
         switch direction {
         case .Left:
             shiftCharacter(from: &left, to: &right)

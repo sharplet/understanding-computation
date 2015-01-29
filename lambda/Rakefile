@@ -1,0 +1,21 @@
+$:.unshift File.expand_path("../lib", __FILE__)
+require "pseudo_task"
+require "rake/clean"
+
+SOURCE_FILES = FileList["src/*.swift"]
+EXECUTABLE = "build/lambda"
+
+directory("build").name.tap do |build|
+  CLEAN << build
+end
+
+file EXECUTABLE => [*SOURCE_FILES, "build"] do |task|
+  *sources, _ = *task.sources
+  sh *(%W[xcrun -sdk macosx swiftc -o #{task.name} --] + sources)
+end
+
+task :run => EXECUTABLE do |task|
+  exec(task.source)
+end
+
+task :default => :run

@@ -1,4 +1,4 @@
-struct Function<T: Printable>: Printable, DebugPrintable {
+struct Function<T: Printable>: ExpressionType {
     let parameter: String
     let body: T
 

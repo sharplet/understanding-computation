@@ -1,4 +1,4 @@
-struct Variable: Printable, DebugPrintable {
+struct Variable: ExpressionType {
     let name: String
 
     init(_ name: String) {

@@ -1,4 +1,4 @@
-struct Call<T: Printable, U: Printable>: Printable, DebugPrintable {
+struct Call<T: Printable, U: Printable>: ExpressionType {
     let left: T
     let right: U
 

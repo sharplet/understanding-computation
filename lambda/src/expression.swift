@@ -1,0 +1,1 @@
+protocol ExpressionType: Printable, DebugPrintable {}

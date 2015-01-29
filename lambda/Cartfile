@@ -1,0 +1,4 @@
+github "robrix/Madness"
+github "robrix/Prelude"
+github "robrix/Either"
+github "robrix/Box"

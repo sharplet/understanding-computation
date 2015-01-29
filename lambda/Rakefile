@@ -11,7 +11,7 @@ end
 
 file EXECUTABLE => [*SOURCE_FILES, "build"] do |task|
   *sources, _ = *task.sources
-  sh *(%W[xcrun -sdk macosx swiftc -o #{task.name} --] + sources)
+  sh *(%W[xcrun -sdk macosx swiftc -FCarthage/Build/Mac -o #{task.name} --] + sources)
 end
 
 task :run => EXECUTABLE do |task|

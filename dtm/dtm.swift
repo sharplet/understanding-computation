@@ -1,5 +1,3 @@
-import Set
-
 extension Optional {
     func flatMap<U>(f: T -> U?) -> U? {
         switch self {

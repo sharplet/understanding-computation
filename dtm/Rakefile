@@ -1,11 +1,7 @@
 require "rake/clean"
 
-BUILT_FRAMEWORKS_DIR = "Carthage/Build/Mac"
-
 file "dtm" => FileList["*.swift"] do |t|
-  sh "xcrun -sdk macosx swiftc -o #{t.name} " \
-     "-F#{BUILT_FRAMEWORKS_DIR} -Xlinker -rpath -Xlinker #{BUILT_FRAMEWORKS_DIR} " \
-      "-- #{t.sources.join(" ")}"
+  sh "xcrun -sdk macosx swiftc -o #{t.name} -- #{t.sources.join(" ")}"
 end
 CLEAN.include("dtm")
 

@@ -1,6 +1,3 @@
-import Set
-
-
 // MARK: Pattern protocol
 
 protocol NFAConvertible {
@@ -92,11 +89,11 @@ struct Concatenate<Left: PatternType, Right: PatternType>: PatternType {
 
     let start = leftDesign.start
     let accept = rightDesign.accept
-    let rules = leftDesign.rulebook.rules + rightDesign.rulebook.rules
+    let rules = leftDesign.rulebook.rules.union(rightDesign.rulebook.rules)
     let joiningRules = leftDesign.accept.map { acceptState in
       FARule(acceptState, transition: (nil, rightDesign.start))
     }
-    let rulebook = NFARulebook(rules + joiningRules)
+    let rulebook = NFARulebook(rules.union(joiningRules))
 
     return NFADesign(start: start, accept: accept, rulebook: rulebook)
   }
@@ -133,11 +130,11 @@ struct Choose<Left: PatternType, Right: PatternType>: PatternType {
 
     let start = NFAState()
     let accept = leftDesign.accept + rightDesign.accept
-    let rules = leftDesign.rulebook.rules + rightDesign.rulebook.rules
+    let rules = leftDesign.rulebook.rules.union(rightDesign.rulebook.rules)
     let joiningRules = [leftDesign, rightDesign].map { design in
       FARule(start, transition: (nil, design.start))
     }
-    let rulebook = NFARulebook(rules + joiningRules)
+    let rulebook = NFARulebook(rules.union(joiningRules))
 
     return NFADesign(start: start, accept: accept, rulebook: rulebook)
   }
@@ -173,7 +170,7 @@ struct Repeat<Repeated: PatternType>: PatternType {
     let joiningRules = accept.map { accept in
       FARule(accept, transition: (nil, design.start))
     }
-    let rulebook = NFARulebook(design.rulebook.rules + joiningRules)
+    let rulebook = NFARulebook(design.rulebook.rules.union(joiningRules))
 
     return NFADesign(start: start, accept: accept, rulebook: rulebook)
   }

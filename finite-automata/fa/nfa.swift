@@ -1,5 +1,3 @@
-import Set
-
 struct NFARulebook<S: State>: Printable {
   typealias Rules = Set<FARule<S>>
 
@@ -15,7 +13,7 @@ struct NFARulebook<S: State>: Printable {
 
   func freeMovesFor(states: Set<S>) -> Set<S> {
     let more = states.flatMap { self.next($0, nil) }
-    return more.subset(states) ? states : freeMovesFor(states + more)
+    return more.isSubsetOf(states) ? states : freeMovesFor(states.union(more))
   }
 
   func rulesFor(state: S, _ event: EventSource) -> Rules {
@@ -56,7 +54,7 @@ struct NFA<S: State> {
     if current.count == 0 {
       return nil
     }
-    return (current & accept).count > 0
+    return current.intersect(accept).count > 0
   }
 }
 
